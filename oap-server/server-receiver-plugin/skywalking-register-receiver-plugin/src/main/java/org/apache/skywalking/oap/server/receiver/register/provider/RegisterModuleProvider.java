@@ -25,6 +25,9 @@ import org.apache.skywalking.oap.server.receiver.register.module.RegisterModule;
 import org.apache.skywalking.oap.server.receiver.register.provider.handler.v5.grpc.*;
 import org.apache.skywalking.oap.server.receiver.register.provider.handler.v5.rest.*;
 import org.apache.skywalking.oap.server.receiver.register.provider.handler.v6.grpc.*;
+import org.apache.skywalking.oap.server.receiver.register.provider.handler.v6.rest.EndpointRegisterServiceHandler;
+import org.apache.skywalking.oap.server.receiver.register.provider.handler.v6.rest.ServiceInstanceRegisterServletHandler;
+import org.apache.skywalking.oap.server.receiver.register.provider.handler.v6.rest.ServiceRegisterServletHandler;
 import org.apache.skywalking.oap.server.receiver.sharing.server.SharingServerModule;
 
 /**
@@ -64,6 +67,13 @@ public class RegisterModuleProvider extends ModuleProvider {
         jettyHandlerRegister.addHandler(new InstanceHeartBeatServletHandler(getManager()));
         jettyHandlerRegister.addHandler(new NetworkAddressRegisterServletHandler(getManager()));
         jettyHandlerRegister.addHandler(new ServiceNameDiscoveryServiceHandler(getManager()));
+
+        //v2
+        jettyHandlerRegister.addHandler(new ServiceRegisterServletHandler(getManager()));
+        jettyHandlerRegister.addHandler(new ServiceInstanceRegisterServletHandler(getManager()));
+        jettyHandlerRegister.addHandler(new org.apache.skywalking.oap.server.receiver.register.provider.handler.v6.rest.ServiceInstancePingServiceHandler(getManager()));
+        jettyHandlerRegister.addHandler(new EndpointRegisterServiceHandler(getManager()));
+        jettyHandlerRegister.addHandler(new org.apache.skywalking.oap.server.receiver.register.provider.handler.v6.rest.NetworkAddressRegisterServletHandler(getManager()));
     }
 
     @Override public void notifyAfterCompleted() {

@@ -122,6 +122,10 @@ public class Config {
          * Collector skywalking trace receiver service addresses.
          */
         public static String BACKEND_SERVICE = "";
+
+        public static String KAFKA_BROKERS = "";
+
+        public static String KAFKA_TOPIC = "";
     }
 
     public static class Jvm {
