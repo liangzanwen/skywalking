@@ -23,6 +23,7 @@ import org.apache.skywalking.oap.server.configuration.api.*;
 import org.apache.skywalking.oap.server.core.CoreModule;
 import org.apache.skywalking.oap.server.core.server.*;
 import org.apache.skywalking.oap.server.library.module.*;
+import org.apache.skywalking.oap.server.receiver.sharing.server.ReceiverKafkaHandlerRegister;
 import org.apache.skywalking.oap.server.receiver.sharing.server.SharingServerModule;
 import org.apache.skywalking.oap.server.receiver.trace.module.TraceModule;
 import org.apache.skywalking.oap.server.receiver.trace.provider.handler.v5.grpc.TraceSegmentServiceHandler;
@@ -88,6 +89,7 @@ public class TraceModuleProvider extends ModuleProvider {
         DynamicConfigurationService dynamicConfigurationService = getManager().find(ConfigurationModule.NAME).provider().getService(DynamicConfigurationService.class);
         GRPCHandlerRegister grpcHandlerRegister = getManager().find(SharingServerModule.NAME).provider().getService(GRPCHandlerRegister.class);
         JettyHandlerRegister jettyHandlerRegister = getManager().find(SharingServerModule.NAME).provider().getService(JettyHandlerRegister.class);
+        ReceiverKafkaHandlerRegister receiverKafkaHandlerRegister = getManager().find(SharingServerModule.NAME).provider().getService(ReceiverKafkaHandlerRegister.class);
         try {
             dynamicConfigurationService.registerConfigChangeWatcher(thresholds);
 
@@ -95,7 +97,7 @@ public class TraceModuleProvider extends ModuleProvider {
             grpcHandlerRegister.addHandler(new TraceSegmentReportServiceHandler(segmentProducerV2, getManager()));
             jettyHandlerRegister.addHandler(new TraceSegmentServletHandler(segmentProducer));
 
-            new TraceSegmentReportKafkaServiceHandler(segmentProducerV2, getManager());
+            receiverKafkaHandlerRegister.addHandler(new TraceSegmentReportKafkaServiceHandler(segmentProducerV2, getManager()));
             
             SegmentStandardizationWorker standardizationWorker = new SegmentStandardizationWorker(getManager(), segmentProducer,
                 moduleConfig.getBufferPath() + "v5", moduleConfig.getBufferOffsetMaxFileSize(), moduleConfig.getBufferDataMaxFileSize(), moduleConfig.isBufferFileCleanWhenRestart(),

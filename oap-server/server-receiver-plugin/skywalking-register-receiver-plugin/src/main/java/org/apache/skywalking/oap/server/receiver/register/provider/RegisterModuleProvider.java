@@ -61,6 +61,7 @@ public class RegisterModuleProvider extends ModuleProvider {
         grpcHandlerRegister.addHandler(new RegisterServiceHandler(getManager()));
         grpcHandlerRegister.addHandler(new ServiceInstancePingServiceHandler(getManager()));
 
+        //v1
         JettyHandlerRegister jettyHandlerRegister = getManager().find(SharingServerModule.NAME).provider().getService(JettyHandlerRegister.class);
         jettyHandlerRegister.addHandler(new ApplicationRegisterServletHandler(getManager()));
         jettyHandlerRegister.addHandler(new InstanceDiscoveryServletHandler(getManager()));

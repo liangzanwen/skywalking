@@ -19,6 +19,7 @@
 package org.apache.skywalking.oap.server.receiver.sharing.server;
 
 import java.util.Objects;
+
 import org.apache.logging.log4j.util.Strings;
 import org.apache.skywalking.oap.server.core.CoreModule;
 import org.apache.skywalking.oap.server.core.remote.health.HealthCheckServiceHandler;
@@ -27,6 +28,7 @@ import org.apache.skywalking.oap.server.library.module.*;
 import org.apache.skywalking.oap.server.library.server.ServerException;
 import org.apache.skywalking.oap.server.library.server.grpc.GRPCServer;
 import org.apache.skywalking.oap.server.library.server.jetty.JettyServer;
+import org.apache.skywalking.oap.server.library.server.kafka.KafkaServer;
 
 /**
  * @author peng-yongsheng
@@ -36,8 +38,10 @@ public class SharingServerModuleProvider extends ModuleProvider {
     private final SharingServerConfig config;
     private GRPCServer grpcServer;
     private JettyServer jettyServer;
+    private KafkaServer kafkaServer;
     private ReceiverGRPCHandlerRegister receiverGRPCHandlerRegister;
     private ReceiverJettyHandlerRegister receiverJettyHandlerRegister;
+    private ReceiverKafkaHandlerRegister receiverKafkaHandlerRegister;
 
     public SharingServerModuleProvider() {
         super();
@@ -87,6 +91,14 @@ public class SharingServerModuleProvider extends ModuleProvider {
         } else {
             this.receiverGRPCHandlerRegister = new ReceiverGRPCHandlerRegister();
             this.registerServiceImplementation(GRPCHandlerRegister.class, receiverGRPCHandlerRegister);
+        }
+
+        if (Strings.isNotEmpty(config.getKafkaBrokers()) && Strings.isNotEmpty(config.getKafkaTopic())) {
+            kafkaServer = new KafkaServer(config.getKafkaBrokers(), config.getKafkaTopic());
+            kafkaServer.initialize();
+
+            this.receiverKafkaHandlerRegister = new ReceiverKafkaHandlerRegister(kafkaServer);
+            this.registerServiceImplementation(ReceiverKafkaHandlerRegister.class, receiverKafkaHandlerRegister);
         }
     }
 
