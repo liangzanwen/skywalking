@@ -33,6 +33,6 @@ public class SharingServerModule extends ModuleDefine {
     }
 
     @Override public Class[] services() {
-        return new Class[] {GRPCHandlerRegister.class, JettyHandlerRegister.class};
+        return new Class[] {GRPCHandlerRegister.class, JettyHandlerRegister.class, ReceiverKafkaHandlerRegister.class};
     }
 }

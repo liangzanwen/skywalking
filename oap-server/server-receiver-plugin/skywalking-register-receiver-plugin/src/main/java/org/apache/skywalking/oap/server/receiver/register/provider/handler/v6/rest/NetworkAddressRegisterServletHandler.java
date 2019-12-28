@@ -49,7 +49,7 @@ public class NetworkAddressRegisterServletHandler extends JettyJsonHandler {
     }
 
     @Override public String pathSpec() {
-        return "/networkAddress/register";
+        return "/v6/networkAddress/register";
     }
 
     @Override protected JsonElement doGet(HttpServletRequest req) {

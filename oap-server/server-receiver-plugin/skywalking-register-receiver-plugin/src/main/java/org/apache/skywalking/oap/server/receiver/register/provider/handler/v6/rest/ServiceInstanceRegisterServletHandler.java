@@ -69,7 +69,7 @@ public class ServiceInstanceRegisterServletHandler extends JettyJsonHandler {
 
     @Override
     public String pathSpec() {
-        return "/serviceInstance/register";
+        return "/v6/serviceInstance/register";
     }
 
     @Override

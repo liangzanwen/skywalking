@@ -28,7 +28,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.skywalking.apm.agent.core.conf.Config;
-import org.apache.skywalking.apm.agent.core.conf.Constants;
 import org.apache.skywalking.apm.util.StringUtil;
 
 import java.io.IOException;
@@ -47,7 +46,7 @@ public enum HttpClient {
     }
 
     public String execute(String path, Object data) throws IOException {
-        HttpPost httpPost = new HttpPost(getIpPort() + Constants.PATH_SEPARATOR + path);
+        HttpPost httpPost = new HttpPost("http://" + getIpPort() + path);
         httpPost.setEntity(new StringEntity(gson.toJson(data)));
         CloseableHttpResponse response = closeableHttpClient.execute(httpPost);
         HttpEntity httpEntity = response.getEntity();
@@ -61,7 +60,7 @@ public enum HttpClient {
                 return null;
             }
             ThreadLocalRandom random = ThreadLocalRandom.current();
-            return ipPorts[random.nextInt(ipPorts.length - 1)];
+            return ipPorts[random.nextInt(0, ipPorts.length)];
         }
         return null;
     }

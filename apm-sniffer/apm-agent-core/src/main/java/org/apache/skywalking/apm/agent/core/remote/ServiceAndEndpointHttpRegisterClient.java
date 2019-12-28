@@ -50,9 +50,9 @@ import java.util.concurrent.TimeUnit;
 public class ServiceAndEndpointHttpRegisterClient extends ServiceAndEndpointRegisterClient {
     private static final ILog logger = LogManager.getLogger(ServiceAndEndpointHttpRegisterClient.class);
 
-    private static final String SERVICE_REGISTER_PATH = "/service/register";
-    private static final String SERVICE_INSTANCE_REGISTER_PATH = "/serviceInstance/register";
-    private static final String SERVICE_INSTANCE_PING_PATH = "/serviceInstance/ping";
+    private static final String SERVICE_REGISTER_PATH = "/v6/service/register";
+    private static final String SERVICE_INSTANCE_REGISTER_PATH = "/v6/serviceInstance/register";
+    private static final String SERVICE_INSTANCE_PING_PATH = "/v6/serviceInstance/ping";
 
     private static final String SERVICE_NAME = "sn";
     private static final String SERVICE_ID = "si";

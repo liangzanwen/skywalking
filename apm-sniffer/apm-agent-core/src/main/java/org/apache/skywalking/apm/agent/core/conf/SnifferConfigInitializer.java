@@ -60,7 +60,7 @@ public class SnifferConfigInitializer {
             Properties properties = new Properties();
             properties.load(configFileStream);
             for (String key : properties.stringPropertyNames()) {
-                String value = (String)properties.get(key);
+                String value = (String) properties.get(key);
                 //replace the key's value. properties.replace(key,value) in jdk8+
                 properties.put(key, PropertyPlaceholderHelper.INSTANCE.replacePlaceholders(value, properties));
             }
@@ -89,9 +89,13 @@ public class SnifferConfigInitializer {
         if (StringUtil.isEmpty(Config.Agent.SERVICE_NAME)) {
             throw new ExceptionInInitializerError("`agent.service_name` is missing.");
         }
-        if (StringUtil.isEmpty(Config.Collector.BACKEND_SERVICE)) {
-            throw new ExceptionInInitializerError("`collector.backend_service` is missing.");
+        if (StringUtil.isEmpty(Config.Collector.BACKEND_SERVICE)
+                && (StringUtil.isEmpty(Config.Collector.BACKEND_ADDRESS)
+                && StringUtil.isEmpty(Config.Collector.KAFKA_BROKERS)
+                && StringUtil.isEmpty(Config.Collector.KAFKA_TOPIC))) {
+            throw new ExceptionInInitializerError("`collector.backend_service, collector.backend_address, collector.kafka_brokers, collector.kafka_topic` are missing.");
         }
+
         if (Config.Plugin.PEER_MAX_LENGTH <= 3) {
             logger.warn("PEER_MAX_LENGTH configuration:{} error, the default value of 200 will be used.", Config.Plugin.PEER_MAX_LENGTH);
             Config.Plugin.PEER_MAX_LENGTH = 200;
@@ -149,7 +153,6 @@ public class SnifferConfigInitializer {
      * as in `agent.config`
      * <p>
      * such as: Property key of `agent.service_name` should be `skywalking.agent.service_name`
-     *
      */
     private static void overrideConfigBySystemProp() throws IllegalAccessException {
         Properties properties = new Properties();

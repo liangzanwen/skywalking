@@ -57,7 +57,7 @@ public class EndpointRegisterServiceHandler extends JettyJsonHandler {
 
     @Override
     public String pathSpec() {
-        return "/endpoint/register";
+        return "/v6/endpoint/register";
     }
 
     @Override

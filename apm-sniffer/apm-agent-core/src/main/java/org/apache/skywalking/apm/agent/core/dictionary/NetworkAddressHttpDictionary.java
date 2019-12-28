@@ -19,7 +19,7 @@ import static org.apache.skywalking.apm.agent.core.conf.Config.Dictionary.SERVIC
  */
 public enum NetworkAddressHttpDictionary {
     INSTANCE;
-    private static final String NETWORK_ADDRESS_REGISTER_PATH = "/networkAddress/register";
+    private static final String NETWORK_ADDRESS_REGISTER_PATH = "/v6/networkAddress/register";
 
     private static final String NETWORK_ADDRESS = "na";
     private static final String NETWORK_ADDRESS_ID = "nai";

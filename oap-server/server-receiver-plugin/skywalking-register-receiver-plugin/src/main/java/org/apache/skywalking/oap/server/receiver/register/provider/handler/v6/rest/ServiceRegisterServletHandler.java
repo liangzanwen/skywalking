@@ -50,7 +50,7 @@ public class ServiceRegisterServletHandler extends JettyJsonHandler {
     }
 
     @Override public String pathSpec() {
-        return "/service/register";
+        return "/v6/service/register";
     }
 
     @Override protected JsonElement doGet(HttpServletRequest req) throws ArgumentsParseException {

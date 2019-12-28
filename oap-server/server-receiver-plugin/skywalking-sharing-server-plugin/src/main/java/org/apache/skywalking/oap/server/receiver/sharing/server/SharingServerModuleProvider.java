@@ -29,11 +29,15 @@ import org.apache.skywalking.oap.server.library.server.ServerException;
 import org.apache.skywalking.oap.server.library.server.grpc.GRPCServer;
 import org.apache.skywalking.oap.server.library.server.jetty.JettyServer;
 import org.apache.skywalking.oap.server.library.server.kafka.KafkaServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author peng-yongsheng
  */
 public class SharingServerModuleProvider extends ModuleProvider {
+
+    private static final Logger logger = LoggerFactory.getLogger(SharingServerModuleProvider.class);
 
     private final SharingServerConfig config;
     private GRPCServer grpcServer;
@@ -41,7 +45,6 @@ public class SharingServerModuleProvider extends ModuleProvider {
     private KafkaServer kafkaServer;
     private ReceiverGRPCHandlerRegister receiverGRPCHandlerRegister;
     private ReceiverJettyHandlerRegister receiverJettyHandlerRegister;
-    private ReceiverKafkaHandlerRegister receiverKafkaHandlerRegister;
 
     public SharingServerModuleProvider() {
         super();
@@ -93,11 +96,12 @@ public class SharingServerModuleProvider extends ModuleProvider {
             this.registerServiceImplementation(GRPCHandlerRegister.class, receiverGRPCHandlerRegister);
         }
 
+        logger.info("kafka: "+config.getKafkaBrokers()+"  "+config.getKafkaTopic());
         if (Strings.isNotEmpty(config.getKafkaBrokers()) && Strings.isNotEmpty(config.getKafkaTopic())) {
             kafkaServer = new KafkaServer(config.getKafkaBrokers(), config.getKafkaTopic());
             kafkaServer.initialize();
 
-            this.receiverKafkaHandlerRegister = new ReceiverKafkaHandlerRegister(kafkaServer);
+            ReceiverKafkaHandlerRegister receiverKafkaHandlerRegister = new ReceiverKafkaHandlerRegister(kafkaServer);
             this.registerServiceImplementation(ReceiverKafkaHandlerRegister.class, receiverKafkaHandlerRegister);
         }
     }
@@ -122,6 +126,9 @@ public class SharingServerModuleProvider extends ModuleProvider {
             }
             if (Objects.nonNull(jettyServer)) {
                 jettyServer.start();
+            }
+            if (Objects.nonNull(kafkaServer)) {
+                kafkaServer.start();
             }
         } catch (ServerException e) {
             throw new ModuleStartException(e.getMessage(), e);

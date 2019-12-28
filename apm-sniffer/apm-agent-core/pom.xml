@@ -39,6 +39,8 @@
         <bytebuddy.version>1.9.16</bytebuddy.version>
         <disruptor.version>3.3.6</disruptor.version>
         <wiremock.version>2.6.0</wiremock.version>
+        <kafka-client.version>0.10.2.1</kafka-client.version>
+        <apache-httpclient.version>4.5.3</apache-httpclient.version>
         <netty-tcnative-boringssl-static.version>2.0.7.Final</netty-tcnative-boringssl-static.version>
         <os-maven-plugin.version>1.4.1.Final</os-maven-plugin.version>
         <shade.package>org.apache.skywalking.apm.dependencies</shade.package>
@@ -54,19 +56,69 @@
         <shade.io.opencensus.source>io.opencensus</shade.io.opencensus.source>
         <shade.io.opencensus.target>${shade.package}.${shade.io.opencensus.source}</shade.io.opencensus.target>
         <ststem-rules.version>1.18.0</ststem-rules.version>
+
+        <shade.org.apache.kafka.source>org.apache.kafka</shade.org.apache.kafka.source>
+        <shade.org.apache.kafka.target>${shade.package}.${shade.org.apache.kafka.source}</shade.org.apache.kafka.target>
+
+        <shade.xerial.source>org.xerial.snappy</shade.xerial.source>
+        <shade.xerial.target>${shade.package}.${shade.xerial.source}</shade.xerial.target>
+
+        <shade.jpountz.source>net.jpountz</shade.jpountz.source>
+        <shade.jpountz.target>${shade.package}.${shade.jpountz.source}</shade.jpountz.target>
+
+        <shade.yammer.source>com.yammer.metrics</shade.yammer.source>
+        <shade.yammer.target>${shade.package}.${shade.yammer.source}</shade.yammer.target>
+
+        <shade.io.opencensus.source>io.opencensus</shade.io.opencensus.source>
+        <shade.io.opencensus.target>${shade.package}.${shade.io.opencensus.source}</shade.io.opencensus.target>
+
+        <shade.kafka.source>kafka</shade.kafka.source>
+        <shade.kafka.target>${shade.package}.${shade.kafka.source}</shade.kafka.target>
+
+        <shade.scala.source>scala</shade.scala.source>
+        <shade.scala.target>${shade.package}.${shade.scala.source}</shade.scala.target>
+
+        <shade.joptsimple.source>joptsimple</shade.joptsimple.source>
+        <shade.joptsimple.target>${shade.package}.${shade.joptsimple.source}</shade.joptsimple.target>
+
+        <shade.jline.source>jline</shade.jline.source>
+        <shade.jline.target>${shade.package}.${shade.jline.source}</shade.jline.target>
+
+        <shade.org.apache.http.source>org.apache.http</shade.org.apache.http.source>
+        <shade.org.apache.http.target>${shade.package}.${shade.org.apache.http.source}</shade.org.apache.http.target>
+
+        <shade.org.apache.commons.source>org.apache.commons</shade.org.apache.commons.source>
+        <shade.org.apache.commons.target>${shade.package}.${shade.org.apache.http.source}</shade.org.apache.commons.target>
+
+        <shade.xerial.source>org.xerial.snappy</shade.xerial.source>
+        <shade.xerial.target>${shade.package}.${shade.xerial.source}</shade.xerial.target>
+
+        <shade.jpountz.source>net.jpountz</shade.jpountz.source>
+        <shade.jpountz.target>${shade.package}.${shade.jpountz.source}</shade.jpountz.target>
+
+        <shade.org.slf4j.source>org.slf4j</shade.org.slf4j.source>
+        <shade.org.slf4j.target>${shade.package}.${shade.org.slf4j.source}</shade.org.slf4j.target>
+
+        <shade.org.apache.commons.source>org.apache.commons</shade.org.apache.commons.source>
+        <shade.org.apache.commons.target>${shade.package}.${shade.org.apache.http.source}</shade.org.apache.commons.target>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
-            <version>0.10.2.1</version>
+            <version>${kafka-client.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-log4j12</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${apache-httpclient.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.skywalking</groupId>
@@ -155,16 +207,6 @@
             <version>${ststem-rules.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
-            <version>4.4.10</version>
-        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>
@@ -220,6 +262,38 @@
                                 <relocation>
                                     <pattern>${shade.io.opencensus.source}</pattern>
                                     <shadedPattern>${shade.io.opencensus.target}</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>${shade.org.apache.kafka.source}</pattern>
+                                    <shadedPattern>${shade.org.apache.kafka.target}</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>${shade.scala.source}</pattern>
+                                    <shadedPattern>${shade.scala.target}</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>${shade.kafka.source}</pattern>
+                                    <shadedPattern>${shade.kafka.target}</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>${shade.org.apache.http.source}</pattern>
+                                    <shadedPattern>${shade.org.apache.http.target}</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>${shade.org.apache.commons.source}</pattern>
+                                    <shadedPattern>${shade.org.apache.commons.target}</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>${shade.jpountz.source}</pattern>
+                                    <shadedPattern>${shade.jpountz.target}</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>${shade.xerial.source}</pattern>
+                                    <shadedPattern>${shade.xerial.target}</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>${shade.org.slf4j.source}</pattern>
+                                    <shadedPattern>${shade.org.slf4j.target}</shadedPattern>
                                 </relocation>
                             </relocations>
                             <filters>

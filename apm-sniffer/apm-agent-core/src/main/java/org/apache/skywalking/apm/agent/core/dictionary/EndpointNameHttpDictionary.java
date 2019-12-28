@@ -42,7 +42,7 @@ public enum EndpointNameHttpDictionary {
     INSTANCE;
     private static final ILog logger = LogManager.getLogger(EndpointNameHttpDictionary.class);
 
-    private static final String ENDPOINT_REGISTER_PATH = "/endpoint/register";
+    private static final String ENDPOINT_REGISTER_PATH = "/v6/endpoint/register";
 
     private static final String SERVICE_ID = "si";
     private static final String ENDPOINT_NAME = "en";

@@ -67,7 +67,7 @@ public class ServiceInstancePingServiceHandler extends JettyJsonHandler {
 
     @Override
     public String pathSpec() {
-        return "/serviceInstance/ping";
+        return "/v6/serviceInstance/ping";
     }
 
     @Override
