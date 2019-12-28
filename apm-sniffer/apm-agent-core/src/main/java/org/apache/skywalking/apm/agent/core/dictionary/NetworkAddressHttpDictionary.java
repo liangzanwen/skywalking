@@ -5,8 +5,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.netty.util.internal.ConcurrentSet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
 import org.apache.skywalking.apm.agent.core.remote.http.HttpClient;
 
 import java.io.IOException;
@@ -44,9 +42,7 @@ public enum NetworkAddressHttpDictionary {
 
     public void syncRemoteDictionary() throws IOException {
         if (unRegisterServices.size() > 0) {
-            HttpPost httpPost = new HttpPost(NETWORK_ADDRESS_REGISTER_PATH);
-            httpPost.setEntity(new StringEntity(gson.toJson(unRegisterServices)));
-            String response = HttpClient.INSTANCE.execute(httpPost);
+            String response = HttpClient.INSTANCE.execute(NETWORK_ADDRESS_REGISTER_PATH, unRegisterServices);
             JsonArray array = gson.fromJson(response, JsonArray.class);
 
             if (array != null && array.size() > 0) {

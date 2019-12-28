@@ -19,6 +19,7 @@
 package org.apache.skywalking.oap.server.receiver.trace.provider;
 
 import java.io.IOException;
+
 import org.apache.skywalking.oap.server.configuration.api.*;
 import org.apache.skywalking.oap.server.core.CoreModule;
 import org.apache.skywalking.oap.server.core.server.*;
@@ -97,8 +98,10 @@ public class TraceModuleProvider extends ModuleProvider {
             grpcHandlerRegister.addHandler(new TraceSegmentReportServiceHandler(segmentProducerV2, getManager()));
             jettyHandlerRegister.addHandler(new TraceSegmentServletHandler(segmentProducer));
 
-            receiverKafkaHandlerRegister.addHandler(new TraceSegmentReportKafkaServiceHandler(segmentProducerV2, getManager()));
-            
+            if (receiverKafkaHandlerRegister != null) {
+                receiverKafkaHandlerRegister.addHandler(new TraceSegmentReportKafkaServiceHandler(segmentProducerV2, getManager()));
+            }
+
             SegmentStandardizationWorker standardizationWorker = new SegmentStandardizationWorker(getManager(), segmentProducer,
                 moduleConfig.getBufferPath() + "v5", moduleConfig.getBufferOffsetMaxFileSize(), moduleConfig.getBufferDataMaxFileSize(), moduleConfig.isBufferFileCleanWhenRestart(),
                 false);

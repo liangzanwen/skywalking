@@ -126,6 +126,8 @@ public class Config {
         public static String KAFKA_BROKERS = "";
 
         public static String KAFKA_TOPIC = "";
+
+        public static String BACKEND_ADDRESS = "";
     }
 
     public static class Jvm {

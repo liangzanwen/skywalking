@@ -93,6 +93,8 @@ storage:
 #    metadataQueryMaxSize: ${SW_STORAGE_H2_QUERY_MAX_SIZE:5000}
 receiver-sharing-server:
   default:
+     kafkaBrokers: 127.0.0.1:9092
+     kafkaTopic: test
 receiver-register:
   default:
 receiver-trace:

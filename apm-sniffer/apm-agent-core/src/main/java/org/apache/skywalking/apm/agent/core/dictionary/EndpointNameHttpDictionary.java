@@ -23,8 +23,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.netty.util.internal.ConcurrentSet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.remote.http.HttpClient;
@@ -86,19 +84,16 @@ public enum EndpointNameHttpDictionary {
     public void syncRemoteDictionary() throws IOException {
         if (unRegisterEndpoints.size() > 0) {
 
-            HttpPost httpPost = new HttpPost(ENDPOINT_REGISTER_PATH);
-            JsonArray jsonArray = new JsonArray();
-
+            JsonArray unRegisterEndpointArray = new JsonArray();
             for (OperationNameKey operationNameKey : unRegisterEndpoints) {
                 JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty(SERVICE_ID, operationNameKey.getServiceId());
                 jsonObject.addProperty(ENDPOINT_NAME, operationNameKey.getEndpointName());
                 jsonObject.addProperty(SPAN_TYPE, operationNameKey.getSpanType());
-                jsonArray.add(jsonObject);
+                unRegisterEndpointArray.add(jsonObject);
             }
 
-            httpPost.setEntity(new StringEntity(gson.toJson(unRegisterEndpoints)));
-            String response = HttpClient.INSTANCE.execute(httpPost);
+            String response = HttpClient.INSTANCE.execute(ENDPOINT_REGISTER_PATH, unRegisterEndpointArray);
             JsonArray array = gson.fromJson(response, JsonArray.class);
 
             if (array != null && array.size() > 0) {

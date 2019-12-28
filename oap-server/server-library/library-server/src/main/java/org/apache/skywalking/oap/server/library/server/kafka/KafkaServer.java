@@ -44,7 +44,7 @@ public class KafkaServer implements Server {
     public void initialize() {
         Properties props = new Properties();
         props.put("bootstrap.servers", brokers);
-        props.put("group.id", "test_group");
+        props.put("group.id", "sw_group");
         props.put("enable.auto.commit", "true");
         props.put("auto.commit.interval.ms", 1000);
         props.put("session.timeout.ms", 120000);

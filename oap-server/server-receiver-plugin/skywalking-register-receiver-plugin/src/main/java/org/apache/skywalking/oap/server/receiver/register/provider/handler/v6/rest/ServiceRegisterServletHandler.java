@@ -42,7 +42,7 @@ public class ServiceRegisterServletHandler extends JettyJsonHandler {
 
     private final IServiceInventoryRegister serviceInventoryRegister;
     private Gson gson = new Gson();
-    private static final String SERVICE_NAME= "sn";
+    private static final String SERVICE_NAME = "sn";
     private static final String SERVICE_ID = "si";
 
     public ServiceRegisterServletHandler(ModuleManager moduleManager) {

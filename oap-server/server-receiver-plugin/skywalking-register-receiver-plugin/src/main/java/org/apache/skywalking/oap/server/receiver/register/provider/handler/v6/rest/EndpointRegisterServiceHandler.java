@@ -23,8 +23,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.apache.skywalking.apm.network.language.agent.SpanType;
-import org.apache.skywalking.apm.network.register.v2.EndpointMapping;
-import org.apache.skywalking.apm.network.register.v2.EndpointMappingElement;
 import org.apache.skywalking.oap.server.core.Const;
 import org.apache.skywalking.oap.server.core.CoreModule;
 import org.apache.skywalking.oap.server.core.register.service.IEndpointInventoryRegister;
@@ -37,7 +35,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Objects;
 
 /**
  * @author caoyixiong

@@ -1,3 +1,21 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package org.apache.skywalking.apm.agent.core.remote;
 
 import com.google.common.collect.Lists;
@@ -5,8 +23,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
 import org.apache.skywalking.apm.agent.core.boot.DefaultNamedThreadFactory;
 import org.apache.skywalking.apm.agent.core.boot.OverrideImplementor;
 import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
@@ -32,7 +48,7 @@ import java.util.concurrent.TimeUnit;
  */
 @OverrideImplementor(ServiceAndEndpointRegisterClient.class)
 public class ServiceAndEndpointHttpRegisterClient extends ServiceAndEndpointRegisterClient {
-    private static final ILog logger = LogManager.getLogger(ServiceAndEndpointRegisterClient.class);
+    private static final ILog logger = LogManager.getLogger(ServiceAndEndpointHttpRegisterClient.class);
 
     private static final String SERVICE_REGISTER_PATH = "/service/register";
     private static final String SERVICE_INSTANCE_REGISTER_PATH = "/serviceInstance/register";
@@ -103,10 +119,9 @@ public class ServiceAndEndpointHttpRegisterClient extends ServiceAndEndpointRegi
             shouldTry = false;
             try {
                 if (RemoteDownstreamConfig.Agent.SERVICE_ID == DictionaryUtil.nullValue()) {
-                    HttpPost httpPost = new HttpPost(SERVICE_REGISTER_PATH);
-                    httpPost.setEntity(new StringEntity(gson.toJson(Lists.newArrayList(Config.Agent.SERVICE_NAME))));
-
-                    JsonArray jsonElements = gson.fromJson(HttpClient.INSTANCE.execute(httpPost), JsonArray.class);
+                    JsonArray jsonElements = gson.fromJson(
+                            HttpClient.INSTANCE.execute(SERVICE_REGISTER_PATH, Lists.newArrayList(Config.Agent.SERVICE_NAME)),
+                            JsonArray.class);
                     if (jsonElements != null && jsonElements.size() > 0) {
                         for (JsonElement jsonElement : jsonElements) {
                             JsonObject jsonObject = jsonElement.getAsJsonObject();
@@ -122,8 +137,6 @@ public class ServiceAndEndpointHttpRegisterClient extends ServiceAndEndpointRegi
                 } else {
                     if (RemoteDownstreamConfig.Agent.SERVICE_INSTANCE_ID == DictionaryUtil.nullValue()) {
 
-                        HttpPost httpPost = new HttpPost(SERVICE_INSTANCE_REGISTER_PATH);
-                        httpPost.setEntity(new StringEntity(gson.toJson(Lists.newArrayList(Config.Agent.SERVICE_NAME))));
                         JsonArray jsonArray = new JsonArray();
                         JsonObject mapping = new JsonObject();
                         jsonArray.add(mapping);
@@ -133,7 +146,7 @@ public class ServiceAndEndpointHttpRegisterClient extends ServiceAndEndpointRegi
                         mapping.addProperty(REGISTER_TIME, System.currentTimeMillis());
                         mapping.addProperty(INSTANCE_PROPERTIES, gson.toJson(OSUtil.buildOSInfo()));
 
-                        JsonArray response = gson.fromJson(HttpClient.INSTANCE.execute(httpPost), JsonArray.class);
+                        JsonArray response = gson.fromJson(HttpClient.INSTANCE.execute(SERVICE_INSTANCE_REGISTER_PATH, jsonArray), JsonArray.class);
                         for (JsonElement serviceInstance : response) {
                             String agentInstanceUUID = serviceInstance.getAsJsonObject().get(INSTANCE_UUID).getAsString();
                             if (AGENT_INSTANCE_UUID.equals(agentInstanceUUID)) {
@@ -145,14 +158,12 @@ public class ServiceAndEndpointHttpRegisterClient extends ServiceAndEndpointRegi
                             }
                         }
                     } else {
-                        HttpPost httpPost = new HttpPost(SERVICE_INSTANCE_PING_PATH);
                         JsonObject jsonObject = new JsonObject();
                         jsonObject.addProperty(INSTANCE_ID, RemoteDownstreamConfig.Agent.SERVICE_INSTANCE_ID);
                         jsonObject.addProperty(HEARTBEAT_TIME, System.currentTimeMillis());
                         jsonObject.addProperty(INSTANCE_UUID, AGENT_INSTANCE_UUID);
 
-                        httpPost.setEntity(new StringEntity(gson.toJson(jsonObject)));
-                        JsonObject response = gson.fromJson(HttpClient.INSTANCE.execute(httpPost), JsonObject.class);
+                        JsonObject response = gson.fromJson(HttpClient.INSTANCE.execute(SERVICE_INSTANCE_PING_PATH, jsonObject), JsonObject.class);
 
                         final Commands commands = gson.fromJson(response.get(INSTANCE_COMMAND).getAsString(), Commands.class);
                         ServiceManager.INSTANCE.findService(CommandService.class).receiveCommand(commands);
